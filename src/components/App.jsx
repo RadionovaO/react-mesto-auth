@@ -13,7 +13,7 @@ import Login from './Login.jsx';
 import * as auth from '../utils/auth.js';
 import ProtectedRouteElement from './ProtectedRoute.jsx';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.jsx';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, BrowserRouter } from 'react-router-dom';
 
 function App() {
 
@@ -161,7 +161,7 @@ function App() {
     
 
     return (
-        
+
         <CurrentUserContext.Provider value={currentUser}>
         <div className='page__content'>
                 <Header />
@@ -187,7 +187,8 @@ function App() {
                         }
                     />
                  <Route path="*" element={<Navigate to="/sign-up"/>}/>   
-            </Routes>
+                    </Routes>
+                   
 
             { loggedIn && <Footer /> }
 
@@ -228,7 +229,7 @@ function App() {
             </ImagePopup>
     
             </div>
-            </CurrentUserContext.Provider>
+        </CurrentUserContext.Provider>
     );
 };
 

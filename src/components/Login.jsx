@@ -35,8 +35,8 @@ function Login({}) {
                 />
                 <button
                     className="autorization__button-save"
-                    type="submit"
-                />
+                    type="submit">Войти</button>
+                
                 <Link className="autorization__link" to="/sign-up">Нет аккаунта? Зарегистрируйтесь</Link>
             </form>
         </div>

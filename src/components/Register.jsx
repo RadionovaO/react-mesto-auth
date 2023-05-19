@@ -36,8 +36,9 @@ function Register({handleRegistration}) {
                 />
                 <button
                     className="autorization__button-save"
-                    type="submit"
-                />
+                    type="submit">
+                    Зарегистрироваться
+                </button>
                 <Link className="autorization__link" to="/sign-in">Уже зарегистрированы? Войти</Link>
             </form>
         </div>
