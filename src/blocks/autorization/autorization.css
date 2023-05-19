@@ -1,0 +1,7 @@
+.autorization {
+    display: flex;
+    flex-direction: column;
+    margin: 0, auto;
+    max-width: 260px;
+    align-items: center;
+};
