@@ -13,7 +13,8 @@ import Login from './Login.jsx';
 import * as auth from '../utils/auth.js';
 import ProtectedRouteElement from './ProtectedRoute.jsx';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.jsx';
-import { Routes, Route, Navigate, useNavigate, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import InfoTooltip from './InfoTooltip.jsx';
 
 function App() {
 
@@ -25,15 +26,85 @@ function App() {
     const [cards, setCards] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [formValue, setFormValue] = useState({
-        email: '',
-        password: ''
-    });
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+    const [isTooltipImage, setIsTooltipImage] = useState('');
+    const [isTooltipTitle, setIsTooltipTitle] = useState('');
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
+
+    function handleRegistration(password, email) {
+        console.log(password, email);
+        auth.register(password, email)
+            .then((res) => {
+                navigate('/sign-in', { replace: true });
+                openInfoTooltip();
+            })
+            .catch((err) => {
+                console.log(err);
+                errorInfoTooltip();
+            });
+    };
+
+    function handleLoginSubmit(email, password) {
+        if (!email || !password) {
+            return
+        }
+        auth.login(email, password)
+        .then((data) => {
+            if (data.token) {
+                setEmail(email);
+                navigate('/', { replace: true });
+                handleLogin();
+            };
+        })
+            .catch((err) => {
+                console.log(err);
+                errorInfoTooltip();
+        })
+    };
+
+    function handleLogin() {
+        setLoggedIn(true);
+    };
+
+    function tokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            auth.checkToken(jwt)
+                .then((res) => {
+                    if (res) {
+                        setEmail(res.data.email);
+                        setLoggedIn(true);
+                        navigate('/', { replace: true });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+    };
+
+    useEffect(() => {
+        tokenCheck();
+    }, []);
+
+    function openInfoTooltip() {
+        setIsInfoTooltipOpen(true);
+        setIsTooltipImage('Ok');
+        setIsTooltipTitle('Вы успешно зарегистрировались!');
+    };
+
+    function errorInfoTooltip() {
+        setIsInfoTooltipOpen(true);
+        setIsTooltipImage('Error');
+        setIsTooltipTitle('Что-то пошло не так! Попробуйте ещё раз.');
+    };
 
     useEffect(() => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
             .then(([usersData, cardSection]) => {
+                console.log(cardSection);
+                console.log(usersData);
                 setCurrentUser(usersData);
                 setCards(cardSection);
             })
@@ -62,6 +133,7 @@ function App() {
         setIsEditAvatarPopupOpen(false);
         setIsEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
+        setIsInfoTooltipOpen(false);
         setSelectedCard(null);
     };
 
@@ -143,38 +215,22 @@ function App() {
             });
     };
 
-    function handleRegistration(evt) {
-        evt.preventDefault();
-        setIsLoading(true);
-        const { email, password } = formValue;
-
-        auth.register(email, password)
-            .then((res) => {
-                navigate('/sign-in', { replace: true });
-            })
-            .catch((err) => {
-                console.log(err);
-                
-            });
-    };
-
-    
-
     return (
 
         <CurrentUserContext.Provider value={currentUser}>
         <div className='page__content'>
-                <Header />
+                <Header email={ email } loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>
                 
             <Routes>
                     <Route path='/sign-up' element={<Register
-                        handleRegistration={handleRegistration} />} />
+                        onRegisterSubmit={handleRegistration} />} />
                     <Route path='/sign-in' element={<Login
-                         />} />
+                        onLoginSubmit={handleLoginSubmit} />} />
                     <Route
                         path='/'
                         element={
                             <ProtectedRouteElement
+                                loggedIn={ loggedIn }
                                 element={Main}
                                 onEditAvatar={handleEditAvatarClick}
                                 onEditProfile={handleEditProfileClick}
@@ -183,15 +239,16 @@ function App() {
                                 onCardLike={handleCardLike}
                                 onCardDelete={handleCardDelete}
                                 cards={cards}
-                                loggedIn={ loggedIn } />
+                                 />
                         }
                     />
-                 <Route path="*" element={<Navigate to="/sign-up"/>}/>   
+                 <Route path="*" element={<Navigate to="/" replace/>}/>   
                     </Routes>
                    
 
             { loggedIn && <Footer /> }
 
+           
            <EditProfilePopup
                     isOpen={isEditProfilePopupOpen}
                     onClose={closeAllPopups}
@@ -227,6 +284,14 @@ function App() {
                 onClose={closeAllPopups}>
               
             </ImagePopup>
+                
+            <InfoTooltip
+                    isOpen={isInfoTooltipOpen}
+                    onClose={closeAllPopups}
+                    tooltipImage={isTooltipImage}
+                    title={isTooltipTitle}
+                >  
+            </InfoTooltip>
     
             </div>
         </CurrentUserContext.Provider>

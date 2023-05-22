@@ -1,14 +1,18 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 
-function Login({}) {
-    const [values,setValues] = useState({});
+function Login({ onLoginSubmit}) {
+    
+    const [values, setValues] = useState({
+        email: '',
+        password: '',
+    });
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        
+        onLoginSubmit(values.email, values.password);
     };
-
+  
         function handleChange(evt) {
             setValues({ ...values, [evt.target.name]: evt.target.value });
         };
@@ -16,7 +20,7 @@ function Login({}) {
     return (
         <div className="autorization">
             <h2 className="autorization__title">Вход</h2>
-            <form className="autorization__form" >
+            <form className="autorization__form" onSubmit={handleSubmit}>
                 <input
                     className="autorization__input"
                     type="email"

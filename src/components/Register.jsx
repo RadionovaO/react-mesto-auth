@@ -1,17 +1,21 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 
-function Register({handleRegistration}) {
-    const [values, setValues] = useState({});
+function Register({ onRegisterSubmit }) {
+
+    const [values, setValues] = useState({
+        password: '',
+        email: '',
+    });
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        handleRegistration();
+        onRegisterSubmit(values.password, values.email);
     };
-
-        function handleChange(evt) {
-            setValues({ ...values, [evt.target.name]: evt.target.value });
-        };
+  
+    function handleChange(evt) {
+        setValues({ ...values, [evt.target.name]: evt.target.value });
+    };
 
     return (
         <div className="autorization">
@@ -24,6 +28,7 @@ function Register({handleRegistration}) {
                     placeholder="Email"
                     required
                     onChange={handleChange}
+                    id="email"
                 />
                 <input
                     className="autorization__input"
@@ -32,7 +37,7 @@ function Register({handleRegistration}) {
                     placeholder="Пароль"
                     required
                     onChange={handleChange}
-
+                    id="password"
                 />
                 <button
                     className="autorization__button-save"
