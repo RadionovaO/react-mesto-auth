@@ -30,10 +30,13 @@ function App() {
     const [isTooltipImage, setIsTooltipImage] = useState('');
     const [isTooltipTitle, setIsTooltipTitle] = useState('');
     const [email, setEmail] = useState('');
+    const [values, setValues] = useState({
+        email: '',
+        password: '',
+    });
     const navigate = useNavigate();
 
     function handleRegistration(password, email) {
-        console.log(password, email);
         auth.register(password, email)
             .then((res) => {
                 navigate('/sign-in', { replace: true });
@@ -53,6 +56,7 @@ function App() {
         .then((data) => {
             if (data.token) {
                 setEmail(email);
+                setValues({ email: '', password: '' });
                 navigate('/', { replace: true });
                 handleLogin();
             };
@@ -103,8 +107,6 @@ function App() {
     useEffect(() => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
             .then(([usersData, cardSection]) => {
-                console.log(cardSection);
-                console.log(usersData);
                 setCurrentUser(usersData);
                 setCards(cardSection);
             })

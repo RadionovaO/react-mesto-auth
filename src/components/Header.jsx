@@ -7,14 +7,10 @@ function Header({ loggedIn, setLoggedIn, email }) {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  /*  function toggleMenu() {
-        setIsMenuOpen(!isMenuOpen);
-    };*/
-
     function signOut() {
         localStorage.removeItem('jwt');
         setLoggedIn(false);
-        navigate('.sign-in');
+        navigate('/sign-in');
         setIsMenuOpen(false);
     };
 
