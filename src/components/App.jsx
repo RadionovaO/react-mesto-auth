@@ -37,6 +37,7 @@ function App() {
     const navigate = useNavigate();
 
     function handleRegistration(password, email) {
+        setIsLoading(true);
         auth.register(password, email)
             .then((res) => {
                 navigate('/sign-in', { replace: true });
@@ -45,10 +46,14 @@ function App() {
             .catch((err) => {
                 console.log(err);
                 errorInfoTooltip();
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
     function handleLoginSubmit(email, password) {
+        setIsLoading(true);
         if (!email || !password) {
             return
         }
@@ -64,7 +69,10 @@ function App() {
             .catch((err) => {
                 console.log(err);
                 errorInfoTooltip();
-        })
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     function handleLogin() {

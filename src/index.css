@@ -56,3 +56,6 @@
 @import url(./blocks/autorization/__input/autorization__input.css);
 @import url(./blocks/autorization/__form/autorization__form.css);
 @import url(./blocks/autorization/__button-save/autorization__button-save.css);
+@import url(./blocks/autorization/__input-error/autorization__input-error.css);
+@import url(./blocks/autorization/__button-save/_disabled/autorization__button-save_disabled.css);
+@import url(./blocks/autorization/__input/_type/autorization__input_type_error.css);

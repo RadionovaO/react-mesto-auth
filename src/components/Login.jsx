@@ -1,46 +1,49 @@
-import React, {useState} from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
 
-function Login({ onLoginSubmit}) {
+function Login({ onLoginSubmit, isLoading }) {
     
-    const [values, setValues] = useState({
-        email: '',
-        password: '',
-    });
-
+    const {values, handleChange, errors, isValid, setValues} = useFormAndValidation()
+  
     function handleSubmit(evt) {
         evt.preventDefault();
-        onLoginSubmit(values.email, values.password);
-    };
-  
-        function handleChange(evt) {
-            setValues({ ...values, [evt.target.name]: evt.target.value });
+        if (isValid) {
+            onLoginSubmit(values.email, values.password);
         };
+    };
 
     return (
         <div className="autorization">
             <h2 className="autorization__title">Вход</h2>
             <form className="autorization__form" onSubmit={handleSubmit}>
                 <input
-                    className="autorization__input"
+                    className={`autorization__input ${!isValid && 'autorization__input_type_error'}`}
                     type="email"
                     name="email"
                     placeholder="Email"
                     required
                     onChange={handleChange}
+                    value={values.email ?? ''}
                 />
+                 <span className="autorization__input-error">{errors.email ?? ''}</span>
                 <input
-                    className="autorization__input"
+                    className={`autorization__input ${!isValid && 'autorization__input_type_error'}`}
                     type="password"
                     name="password"
                     placeholder="Пароль"
                     required
+                    minLength='6'
                     onChange={handleChange}
+                    value={values.password ?? ''}
                 />
+                <span className="autorization__input-error">{errors.password ?? ''}</span>
                 <button
                     className="autorization__button-save"
-                    type="submit">Войти</button>
-                
+                    type="submit"
+                    disabled={!isValid}>
+                     {!isLoading ? 'Войти' : 'Загрузка...'}
+                </button>
                 <Link className="autorization__link" to="/sign-up">Нет аккаунта? Зарегистрируйтесь</Link>
             </form>
         </div>
